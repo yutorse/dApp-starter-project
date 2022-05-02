@@ -1,11 +1,14 @@
 import React, { useEffect, useState } from "react";
 //import * as React from "react";
-//import { ethers } from "ethers";
+import { ethers } from "ethers";
 import './App.css';
+import abi from"./utils/WavePortal.json";
 
 const App = () => {
   /* ユーザーのパブリックウォレットを保存するために使用する状態変数を定義します */
   const [currentAccount, setCurrentAccount] = useState("");
+  const contractAddress = "0x8194Cd0ADb3bA937BB69fF0eb0A3921CCB7d5E91";
+  const contractABI = abi.abi;
   console.log("currentAccount: ", currentAccount);
 
   /* window.ethereumにアクセスできることを確認します */
@@ -50,6 +53,37 @@ const App = () => {
     }
   };
 
+  // waveの回数をカウントする関数を実装
+  const wave = async () => {
+    try {
+      const { ethereum } = window;
+      if(ethereum) {
+        const provider = new ethers.providers.Web3Provider(ethereum);
+        const signer = provider.getSigner();
+        const wavePortalContract = new ethers.Contract(
+          contractAddress,
+          contractABI,
+          signer
+        );
+        let count = await wavePortalContract.getTotalWaves();
+        console.log("Retrieved total wave count...", count.toNumber());
+        /*
+        コントラクトに👋（wave）を書き込む。ここから...
+        */
+        const waveTxn = await wavePortalContract.wave();
+        console.log("Mining...", waveTxn.hash);
+        await waveTxn.wait();
+        console.log("Mined -- ", waveTxn.hash);
+        count = await wavePortalContract.getTotalWaves();
+        console.log("Retrieved total wave count...", count.toNumber());
+      } else {
+        console.log("Ethereum object doesn't exist!");
+      }
+    } catch(error) {
+      console.log(error);
+    }
+  };
+
   /* Webページがロードされたときに下記の関数を実行します */
   useEffect(() => {
     checkIfWalletIsConnected();
@@ -65,7 +99,7 @@ const App = () => {
           イーサリアムウォレットを接続して、メッセージを作成したら、<span role="img" aria-label="hand-wave">👋</span>を送ってください<span role="img" aria-label="shine">✨</span>
           </div>
 
-          <button className="waveButton" onClick={null}>
+          <button className="waveButton" onClick={wave}>
           Wave at Me
           </button>
           {/*ウォレットコネクトのボタンを実装 */}

@@ -3,6 +3,8 @@ import React, { useEffect, useState } from "react";
 import { ethers } from "ethers";
 import './App.css';
 import abi from"./utils/WavePortal.json";
+import Button from '@material-ui/core/Button'
+//import PanToolIcon from '@mui/icons-material/PanTool';
 
 const App = () => {
   /* ユーザーのパブリックウォレットを保存するために使用する状態変数を定義します */
@@ -194,20 +196,29 @@ const App = () => {
 
           {/*ウォレットコネクトのボタンを実装 */}
           {!currentAccount && (
-            <button className="waveButton" onClick={connectWallet}>
+            <Button variant="contained" className="waveButton" onClick={connectWallet}>
               Connect Wallet
-            </button>
+            </Button>
+            /*<button className="waveButton" onClick={connectWallet}>
+              Connect Wallet
+            </button>*/
           )}
           {currentAccount && (
-            <button className="waveButton" onClick={connectWallet}>
+            <Button variant="contained" className="waveButton" onClick={connectWallet}>
               Wallet Connected
-            </button>
+            </Button>
+            /*<button className="waveButton" onClick={connectWallet}>
+              Wallet Connected
+            </button>*/
           )}
           {/* waveボタンにwave関数を連動 */}
           {currentAccount && (
-            <button className="waveButton" onClick={wave}>
+            <Button variant="contained" className="waveButton" onClick={wave} /*endIcon={<PanToolIcon />}*/>
               Wave at Me
-            </button>
+            </Button>
+            /*<button className="waveButton" onClick={wave}>
+              Wave at Me
+            </button>*/
           )}
           {/* メッセージボックスを実装 */}
           {currentAccount && (
